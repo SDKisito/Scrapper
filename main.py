@@ -1,6 +1,6 @@
 import streamlit as st
 import pathlib
-from main import scrape_website
+from .main import scrape_website
 
 # function to load css from the assets folder
 def load_css(file_path):
