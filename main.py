@@ -1,22 +1,24 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-# Function to scrape HTML from a website
-def scrape_website(website_url):
-    # Path to WebDriver
-    webdriver_path = "./chromedriver"  # Replace with your WebDriver path
-    service = Service(webdriver_path)
-    driver = webdriver.Chrome(service=service)
-    try:
-        # Open the website
-        driver.get(website_url)
-        # Wait for the page to fully load
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
-        # Extract the HTML source
-        html_content = driver.page_source
-        return html_content
-    finally:
-        # Ensure the browser is closed after scraping
-        driver.quit()
+import streamlit as st
+import pathlib
+from main import scrape_website
+
+# function to load css from the assets folder
+def load_css(file_path):
+	with open(file_path) as f:
+		st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# Load the external CSS
+css_path = pathlib.Path("assets/style.css")
+if css_path.exists():
+	load_css(css_path)
+
+st.title("AI Scraper")
+st.markdown(
+	"Enter a website URL to scrape, clean the text content, and display the result in smaller chunks."
+)
+url = st.text_input(label="", placeholder="Enter the URL of the website you want to scrape")
+if st.button("Scrape", key="scrape_button"):
+	st.write("scraping the website…")
+	result = scrape_website(url)
+	st.write("Scraping complete.")
+	st.write(result)
